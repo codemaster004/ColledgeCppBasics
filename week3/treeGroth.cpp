@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int main() {
+void treeGame() {
     float t1y;
     float t1x;
     float t1r;
@@ -78,25 +78,25 @@ int main() {
 
                         float arccos = acos(shifty2);
 
-                        float prevangle = -22.5 / 180.0 * 3.1415;
+                        float prevAngle = -22.5 / 180.0 * 3.1415;
 
                         int sector = -1;
                         for (int i = 0; i < 8; i++) {
-                            float angle = prevangle + 45.0 / 180.0 * 3.1415;
-                            if (arccos >= prevangle && arccos <= angle) {
+                            float angle = prevAngle + 45.0 / 180.0 * 3.1415;
+                            if (arccos >= prevAngle && arccos <= angle) {
                                 sector = i;
                             }
-                            prevangle = angle;
+                            prevAngle = angle;
                         }
                         if (sector == -1) {
                             cout << "???";
-                            return -1;
+                            return;
                         }
 
-                        if (sector == -1) {
-                            cout << "ERROR" << endl;
-                            return -1;
-                        }
+//                        if (sector == -1) {
+//                            cout << "ERROR" << endl;
+//                            return;
+//                        }
                     }
                     cout << endl;
                 }
@@ -117,13 +117,13 @@ int main() {
                 t2active = false;
             }
         } else if (command == "ADV") {
-            int nepochs;
-            cin >> nepochs;
-            t1r += nepochs * r_incr;
-            t2r += nepochs * r_incr;
+            int nEpochs;
+            cin >> nEpochs;
+            t1r += nEpochs * r_incr;
+            t2r += nEpochs * r_incr;
 
-            t1h += nepochs * h_incr;
-            t2h += nepochs * h_incr;
+            t1h += nEpochs * h_incr;
+            t2h += nEpochs * h_incr;
         } else if (command == "END") {
             break;
         } else {
@@ -131,3 +131,10 @@ int main() {
         }
     }
 }
+
+/*
+ADD 1 0.0 0.0 2 2
+ADD 2 -2.0 -2.0 1 4
+PRT 2
+PRT 3 -5 5 -5 5
+END*/
