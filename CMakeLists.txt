@@ -8,4 +8,5 @@ add_executable(BCPLabs main.cpp
         week2/labs.cpp
         week2/test.cpp
         week2/fractals.cpp
-        week3/treeGroth.cpp)
+        week3/treeGroth.cpp
+        week3/lecture.cpp)
