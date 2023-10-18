@@ -42,9 +42,5 @@ void binomialCoefficient() {
     cout << factorial(n) / (factorial(k) * factorial(n-k));
 }
 
-int main() {
-    binomialCoefficient();
-    return 0;
-}
 /* Try writing a program to compute `e^x`
  * e^x ~= sum([ x^n / n! ] for n in range(inf)) */
