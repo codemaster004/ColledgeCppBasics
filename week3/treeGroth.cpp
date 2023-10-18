@@ -58,14 +58,17 @@ int main() {
             int mode;
             cin >> mode;
             if (mode == 3) {
-
+                int x1, x2, y1, y2;
+                cin >> x1;
+                cin >> x2;
+                cin >> y1;
+                cin >> y2;
             } else {
                 cout << "Trees:" << endl;
                 cout << "1 at " << t1y << ", " << t1x << " r=" << t1r << " h=" << t1h << endl;
                 if (mode == 2) {
                     cout << " Interfering with: ";
-                    if (abs(t1y - t2y) * abs(t1y - t2y) + abs(t1x - t2x) * abs(t1x - t2x) <=
-                        (t1r + t2r) * (t1r + t2r)) {
+                    if ((t1y - t2y) * (t1y - t2y) + (t1x - t2x) * (t1x - t2x) <= (t1r + t2r) * (t1r + t2r)) {
                         cout << "2" << endl;;
                         float shiftx = t2x - t1x;
                         float shifty = t2y - t1y;
@@ -100,8 +103,7 @@ int main() {
                 cout << "2 at " << t2y << ", " << t2x << " r=" << t2r << " h=" << t2h << endl;
                 if (mode == 2) {
                     cout << " Interfering with: ";
-                    if (abs(t1y - t2y) * abs(t1y - t2y) + abs(t1x - t2x) * abs(t1x - t2x) <=
-                        (t1r + t2r) * (t1r + t2r)) {
+                    if ((t1y - t2y) * (t1y - t2y) + (t1x - t2x) * (t1x - t2x) <= (t1r + t2r) * (t1r + t2r)) {
                         cout << "1";
                     }
                     cout << endl;
