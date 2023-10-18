@@ -4,18 +4,13 @@
 
 using namespace std;
 
-void treeGame() {
-    float t1y;
-    float t1x;
-    float t1r;
-    float t1h;
-    bool t1active = false;
+const int maxNumTrees = 2;
 
-    float t2y;
-    float t2x;
-    float t2r;
-    float t2h;
-    bool t2active = false;
+void treeGame() {
+    float **trees = new float *[maxNumTrees];
+    for (int i = 0; i < 2; i++) {
+        trees[i] = new float[5];
+    }
 
     float r_incr;
     float h_incr;
@@ -26,16 +21,19 @@ void treeGame() {
         if (command == "ADD") {
             int id;
             cin >> id;
-            if (id == 1) {
-                if (t1active) {
+
+            if (trees[id] != nullptr) {
+                cout << trees[id][0];
+                if (trees[id][0]) {
                     cout << "Tree already active" << endl;
                     continue;
                 }
-                cin >> t1y;
-                cin >> t1x;
-                cin >> t1r;
-                cin >> t1h;
-                t1active = true;
+
+                trees[id][0] = 1;
+                cin >> trees[id][1];
+                cin >> trees[id][2];
+                cin >> trees[id][3];
+                cin >> trees[id][4];
             }
             if (id == 2) {
                 if (t2active) {
