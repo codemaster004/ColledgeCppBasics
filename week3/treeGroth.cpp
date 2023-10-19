@@ -71,25 +71,30 @@ void treeGame() {
                         continue;
 
                     cout << (i + 1) << " at " << trees[i][1] << ", " << trees[i][2] << " r=" << trees[i][3] << " h=" << trees[i][4] << endl;
+                    if (mode == 2) {
+                        cout << " Interfering with: ";
+                        for (int j = 0; j < maxNumTrees; ++j) {
+                            if (i == j)
+                                continue;
+                            float shiftX = trees[i][2] - trees[j][2];
+                            float shiftY = trees[i][1] - trees[j][1];
+                            float sumR = trees[i][3] + trees[j][3];
+                            int sector = 0;
+
+                            if (calcHypotenuse2(shiftX, shiftY) <= sumR * sumR) {
+                                float r = sqrt(calcHypotenuse2(shiftX, shiftY));
+                                float numAngle = shiftY / r;
+
+                                float arcCos = acos(numAngle);
+
+                                sector = (int)((arcCos * 8) / PI);
+                                assert(sector >= 0 && sector <= 7);
+                            }
+                            cout << "COMPASS: " << sector << endl;
+                        }
+                    }
                 }
-//                cout << "1 at " << t1y << ", " << t1x << " r=" << t1r << " h=" << t1h << endl;
-//                if (mode == 2) {
-//                    cout << " Interfering with: ";
-//                    float shiftX = t2x - t1x;
-//                    float shiftY = t2y - t1y;
-//                    int sector = 0;
-//                    if (calcHypotenuse2(shiftX, shiftY) <= (t1r + t2r) * (t1r + t2r)) {
-//                        float r = sqrt(calcHypotenuse2(shiftX, shiftY));
-//                        float numAngle = shiftY / r;
-//
-//                        float arcCos = acos(numAngle);
-//
-//                        sector = (int)((arcCos * 8) / PI);
-//                        assert(sector >= 0 && sector <= 7);
-//                        cout << "COMPASS: " << sector << endl;
-//                    }
-//                }
-//                cout << "2 at " << t2y << ", " << t2x << " r=" << t2r << " h=" << t2h << endl;
+
             }
         } else if (command == "REM") {
             int id;
@@ -119,10 +124,3 @@ int main() {
     treeGame();
     return 0;
 }
-
-/*
-ADD 1 0.0 0.0 2 2
-ADD 2 -2.0 -2.0 1 4
-PRT 2
-PRT 3 -5 5 -5 5
-END*/
