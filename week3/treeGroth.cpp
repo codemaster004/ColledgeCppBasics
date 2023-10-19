@@ -128,6 +128,11 @@ void treeGame() {
             cout << "Unknow command" << endl;
         }
     }
+
+    for (int i = 0; i < maxNumTrees; i++) {
+        delete[] trees[i];
+    }
+    delete[] trees;
 }
 
 int checkSector(float vectorX, float vectorY) {
