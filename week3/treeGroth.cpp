@@ -6,15 +6,18 @@
 using namespace std;
 
 #define PI 3.1415
+#define N_SECTORS 8
 
 const int maxNumTrees = 2;
 
-float calcHypotenuse2(float a, float b) {
-    return a * a + b * b;
-}
+int checkSector(float vectorX, float vectorY);
+
+float calcHypotenuse2(float a, float b);
+
+int binaryTableToNumber(const int *binaryMap);
 
 void treeGame() {
-    float **trees = new float *[maxNumTrees];
+    auto **trees = new float *[maxNumTrees];
     for (int i = 0; i < 2; i++) {
         trees[i] = new float[5];
     }
@@ -46,8 +49,8 @@ void treeGame() {
             int mode;
             cin >> mode;
             if (mode == 0) {
-                cin >> r_incr >> h_incr;
-                // TODO: Simulation
+                cin >> r_incr;
+                cin >> h_incr;
             }
         } else if (command == "PRT") {
             int mode;
@@ -70,30 +73,32 @@ void treeGame() {
                     if (trees[i] == nullptr)
                         continue;
 
-                    cout << (i + 1) << " at " << trees[i][1] << ", " << trees[i][2] << " r=" << trees[i][3] << " h=" << trees[i][4] << endl;
+                    cout << (i + 1) << " at " << trees[i][1] << ", " << trees[i][2] << " r=" << trees[i][3] << " h="
+                         << trees[i][4] << endl;
                     if (mode == 2) {
                         cout << " Interfering with: ";
-                        // TODO: consider overlying base on collision points not tree location
+
+                        int compassEncoder[N_SECTORS];
+                        for (int &j: compassEncoder) {
+                            j = 0;
+                        }
+
                         for (int j = 0; j < maxNumTrees; j++) {
                             if (i == j)
                                 continue;
-                            float shiftX = trees[i][2] - trees[j][2];
-                            float shiftY = trees[i][1] - trees[j][1];
-                            float sumR = trees[i][3] + trees[j][3];
-                            int sector = 0;
+
+                            float shiftX = trees[j][2] - trees[i][2];
+                            float shiftY = trees[j][1] - trees[i][1];
+                            float sumR = trees[j][3] + trees[i][3];
 
                             if (calcHypotenuse2(shiftX, shiftY) <= sumR * sumR) {
                                 cout << j + 1 << endl;
-                                float r = sqrt(calcHypotenuse2(shiftX, shiftY));
-                                float numAngle = shiftY / r;
 
-                                float arcCos = acos(numAngle);
-
-                                sector = (int)((arcCos * 8) / PI);
-                                assert(sector >= 0 && sector <= 7);
+                                int sector = checkSector(shiftX, shiftY);
+                                compassEncoder[sector] = 1;
                             }
-                            cout << " COMPASS: " << sector << endl;
                         }
+                        cout << " COMPASS: " << binaryTableToNumber(compassEncoder) << endl;
                     }
                 }
 
@@ -109,11 +114,14 @@ void treeGame() {
         } else if (command == "ADV") {
             int nEpochs;
             cin >> nEpochs;
-//            t1r += nEpochs * r_incr;
-//            t2r += nEpochs * r_incr;
 
-//            t1h += nEpochs * h_incr;
-//            t2h += nEpochs * h_incr;
+            assert(not isnan(r_incr));
+            assert(not isnan(h_incr));
+
+            for (int i = 0; i < maxNumTrees; ++i) {
+                trees[i][3] += (float) nEpochs * r_incr;
+                trees[i][4] += (float) nEpochs * h_incr;
+            }
         } else if (command == "END") {
             break;
         } else {
@@ -122,7 +130,47 @@ void treeGame() {
     }
 }
 
-//int main() {
-//    treeGame();
-//    return 0;
-//}
+int checkSector(float vectorX, float vectorY) {
+    int sector = -1;
+    float r = sqrt(calcHypotenuse2(vectorX, vectorY));
+    float numAngle = vectorY / r;
+
+    float arcCos = acos(abs(numAngle));
+    if (numAngle < 0) {
+        arcCos += float(PI);
+    }
+
+    float sectorRange = 360.0 / N_SECTORS;
+    float prevAngle = sectorRange / (float) (-2.0) / (float) (180.0) * float(PI);
+
+    for (int i = 0; i < 8; i++) {
+        float angle = prevAngle + (float) (sectorRange / 180.0 * PI);
+        if (arcCos >= prevAngle && arcCos <= angle) {
+            sector = i;
+            break;
+        }
+        prevAngle = angle;
+    }
+    assert(sector >= 0 && sector <= 7);
+    return sector;
+}
+
+float calcHypotenuse2(float a, float b) {
+    return a * a + b * b;
+}
+
+int binaryTableToNumber(const int *binaryMap) {
+    int finalNumber = 0;
+
+    int multiplier = 1;
+    for (int i = 0; i < N_SECTORS; ++i) {
+        finalNumber += binaryMap[i] * multiplier;
+        multiplier *= 2;
+    }
+    return finalNumber;
+}
+
+int main() {
+    treeGame();
+    return 0;
+}
