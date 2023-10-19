@@ -66,14 +66,15 @@ void treeGame() {
                 // TODO: some visualisation
             } else if (mode == 1 || mode == 2) {
                 cout << "Trees:" << endl;
-                for (int i = 0; i < maxNumTrees; ++i) {
+                for (int i = 0; i < maxNumTrees; i++) {
                     if (trees[i] == nullptr)
                         continue;
 
                     cout << (i + 1) << " at " << trees[i][1] << ", " << trees[i][2] << " r=" << trees[i][3] << " h=" << trees[i][4] << endl;
                     if (mode == 2) {
                         cout << " Interfering with: ";
-                        for (int j = 0; j < maxNumTrees; ++j) {
+                        // TODO: consider overlying base on collision points not tree location
+                        for (int j = 0; j < maxNumTrees; j++) {
                             if (i == j)
                                 continue;
                             float shiftX = trees[i][2] - trees[j][2];
@@ -82,6 +83,7 @@ void treeGame() {
                             int sector = 0;
 
                             if (calcHypotenuse2(shiftX, shiftY) <= sumR * sumR) {
+                                cout << j + 1 << endl;
                                 float r = sqrt(calcHypotenuse2(shiftX, shiftY));
                                 float numAngle = shiftY / r;
 
@@ -90,7 +92,7 @@ void treeGame() {
                                 sector = (int)((arcCos * 8) / PI);
                                 assert(sector >= 0 && sector <= 7);
                             }
-                            cout << "COMPASS: " << sector << endl;
+                            cout << " COMPASS: " << sector << endl;
                         }
                     }
                 }
@@ -120,7 +122,7 @@ void treeGame() {
     }
 }
 
-int main() {
-    treeGame();
-    return 0;
-}
+//int main() {
+//    treeGame();
+//    return 0;
+//}
