@@ -11,4 +11,6 @@ add_executable(BCPLabs main.cpp
         week3/treeGroth.cpp
         week3/lecture.cpp
         week3/bitOperations.cpp
-        week3/binaryAddition.cpp)
+        week3/binaryAddition.cpp
+        week3/homeworkSequences.cpp
+        week3/secondGroupProject.cpp)
