@@ -68,6 +68,31 @@ void treeGame() {
                 cin >> y1;
                 cin >> y2;
                 // TODO: some visualisation
+                int nRows = abs(y1) + abs(y2);
+                int nCols = abs(x1) + abs(x2);
+
+                // Iterate over the board area
+                for (int i = 0; i < nRows; ++i) {
+                    for (int j = 0; j < nCols; ++j) {
+
+                        auto checkingX = (float)(j + 0.5 + y1);
+                        auto checkingY = (float)(i + 0.5 + x1);
+
+                        bool slotOccupied = false;
+                        for (int n = 0; n < maxNumTrees; n++) {
+                            float vectorY = checkingY - trees[n][1];
+                            float vectorX = checkingX - trees[n][2];
+
+                            if (calcHypotenuse2(vectorY, vectorX) <= trees[n][3] * trees[n][3]) {
+                                slotOccupied = true;
+                            }
+                        }
+
+                        cout << (slotOccupied ? "T" : ".");
+                    }
+                    cout << endl;
+                }
+
             } else if (mode == 1 || mode == 2) {
                 cout << "Trees:" << endl;
                 for (int i = 0; i < maxNumTrees; i++) {
