@@ -10,6 +10,14 @@ using namespace std;
 
 const int maxNumTrees = 2;
 
+struct Tree {
+    bool isActive = false;
+    float positionX{};
+    float positionY{};
+    float crownRadius{};
+    float trunkHeight{};
+};
+
 int checkSector(float vectorX, float vectorY);
 
 float calcHypotenuse2(float a, float b);
@@ -18,9 +26,9 @@ int binaryTableToNumber(const int *binaryMap);
 
 void treeGame() {
     // Allocate memory for Tree data
-    auto **trees = new float *[maxNumTrees];
+    auto **trees = new Tree *[maxNumTrees];
     for (int i = 0; i < 2; i++) {
-        trees[i] = new float[5];
+        trees[i] = new Tree;
     }
 
     float r_incr;
@@ -35,16 +43,16 @@ void treeGame() {
             index = id - 1;
 
             if (trees[index] != nullptr) {
-                if (trees[index][0] == 1) {
+                if (trees[index]->isActive) {
                     cout << "Tree already active" << endl;
                     continue;
                 }
 
-                trees[index][0] = 1; // isActive
-                cin >> trees[index][1]; // posY
-                cin >> trees[index][2]; // posX
-                cin >> trees[index][3]; // treeR
-                cin >> trees[index][4]; // treeH
+                trees[index]->isActive = true; // isActive
+                cin >> trees[index]->positionY; // posY
+                cin >> trees[index]->positionX; // posX
+                cin >> trees[index]->crownRadius; // treeR
+                cin >> trees[index]->trunkHeight; // treeH
             }
         } else if (command == "MDL") {
             int mode;
@@ -57,17 +65,12 @@ void treeGame() {
             int mode;
             cin >> mode;
             if (mode == 3) {
-                /* Print the status of the board in the area [x1, x2] x [y1, y2] in the following way.
-                 * Divide the board into squares of size 1 x 1.
-                 * If a center of a given square is inside a living tree and the desired rectangle, print T letter.
-                 * Otherwise, print .
-                 * */
                 int x1, x2, y1, y2;
                 cin >> x1;
                 cin >> x2;
                 cin >> y1;
                 cin >> y2;
-                // TODO: some visualisation
+
                 int nRows = abs(y1) + abs(y2);
                 int nCols = abs(x1) + abs(x2);
 
@@ -75,15 +78,15 @@ void treeGame() {
                 for (int i = 0; i < nRows; ++i) {
                     for (int j = 0; j < nCols; ++j) {
 
-                        auto checkingX = (float)(j + 0.5 + y1);
-                        auto checkingY = (float)(i + 0.5 + x1);
+                        auto checkingX = (float) (j + 0.5 + y1);
+                        auto checkingY = (float) (i + 0.5 + x1);
 
                         bool slotOccupied = false;
                         for (int n = 0; n < maxNumTrees; n++) {
-                            float vectorY = checkingY - trees[n][1];
-                            float vectorX = checkingX - trees[n][2];
+                            float vectorY = checkingY - trees[n]->positionY;
+                            float vectorX = checkingX - trees[n]->positionX;
 
-                            if (calcHypotenuse2(vectorY, vectorX) <= trees[n][3] * trees[n][3]) {
+                            if (calcHypotenuse2(vectorY, vectorX) <= trees[n]->crownRadius * trees[n]->crownRadius) {
                                 slotOccupied = true;
                             }
                         }
@@ -99,8 +102,8 @@ void treeGame() {
                     if (trees[i] == nullptr)
                         continue;
 
-                    cout << (i + 1) << " at " << trees[i][1] << ", " << trees[i][2] << " r=" << trees[i][3] << " h="
-                         << trees[i][4] << endl;
+                    cout << (i + 1) << " at " << trees[i]->positionY << ", " << trees[i]->positionX << " r="
+                         << trees[i]->crownRadius << " h=" << trees[i]->trunkHeight << endl;
                     if (mode == 2) {
                         cout << " Interfering with: ";
 
@@ -113,9 +116,9 @@ void treeGame() {
                             if (i == j)
                                 continue;
 
-                            float shiftX = trees[j][2] - trees[i][2];
-                            float shiftY = trees[j][1] - trees[i][1];
-                            float sumR = trees[j][3] + trees[i][3];
+                            float shiftX = trees[j]->positionX - trees[i]->positionX;
+                            float shiftY = trees[j]->positionY - trees[i]->positionY;
+                            float sumR = trees[j]->crownRadius + trees[i]->crownRadius;
 
                             if (calcHypotenuse2(shiftX, shiftY) <= sumR * sumR) {
                                 cout << j + 1 << endl;
@@ -132,11 +135,6 @@ void treeGame() {
         } else if (command == "REM") {
             int id;
             cin >> id;
-            if (id == 1) {
-//                t1active = false;
-            } else if (id == 2) {
-//                t2active = false;
-            }
         } else if (command == "ADV") {
             int nEpochs;
             cin >> nEpochs;
@@ -145,13 +143,13 @@ void treeGame() {
             assert(not isnan(h_incr));
 
             for (int i = 0; i < maxNumTrees; ++i) {
-                trees[i][3] += (float) nEpochs * r_incr;
-                trees[i][4] += (float) nEpochs * h_incr;
+                trees[i]->crownRadius += (float) nEpochs * r_incr;
+                trees[i]->trunkHeight += (float) nEpochs * h_incr;
             }
         } else if (command == "END") {
             break;
         } else {
-            cout << "Unknow command" << endl;
+            cout << "Unknown command" << endl;
         }
     }
 
@@ -169,7 +167,7 @@ int checkSector(float vectorX, float vectorY) {
 
     float arcCos = acos(numAngle);
     if (vectorX < 0) {
-        arcCos = float((float)(PI - arcCos) + PI);
+        arcCos = float((float) (PI - arcCos) + PI);
     }
 
     float sectorRange = 360.0 / N_SECTORS;
