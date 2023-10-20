@@ -17,6 +17,7 @@ float calcHypotenuse2(float a, float b);
 int binaryTableToNumber(const int *binaryMap);
 
 void treeGame() {
+    // Allocate memory for Tree data
     auto **trees = new float *[maxNumTrees];
     for (int i = 0; i < 2; i++) {
         trees[i] = new float[5];
@@ -129,6 +130,7 @@ void treeGame() {
         }
     }
 
+    // Free up the memory
     for (int i = 0; i < maxNumTrees; i++) {
         delete[] trees[i];
     }
@@ -140,9 +142,9 @@ int checkSector(float vectorX, float vectorY) {
     float r = sqrt(calcHypotenuse2(vectorX, vectorY));
     float numAngle = vectorY / r;
 
-    float arcCos = acos(abs(numAngle));
-    if (numAngle < 0) {
-        arcCos += float(PI);
+    float arcCos = acos(numAngle);
+    if (vectorX < 0) {
+        arcCos = float((float)(PI - arcCos) + PI);
     }
 
     float sectorRange = 360.0 / N_SECTORS;
