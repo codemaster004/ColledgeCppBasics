@@ -229,7 +229,7 @@ void printInterferences(Tree **trees, int originalTreeId) {
     cout << " COMPASS: " << binaryTableToNumber(compassEncoder) << endl;
 }
 
-int main() {
-    treeGame();
-    return 0;
-}
+//int main() {
+//    treeGame();
+//    return 0;
+//}
