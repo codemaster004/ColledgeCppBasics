@@ -24,9 +24,13 @@ float calcHypotenuse2(float a, float b);
 
 int binaryTableToNumber(const int *binaryMap);
 
+bool doesInterfere(Tree originTree, Tree checkingTree);
+
 void printCurrentForest(Tree **trees, int minX, int maxX, int minY, int maxY);
 
 void printInterferences(Tree **trees, int originalTreeId);
+
+void advanceForest(Tree **trees, float crownIncrease, float trunkIncrease, float years);
 
 void treeGame() {
     // Allocate memory for Tree data
@@ -92,10 +96,16 @@ void treeGame() {
                  * Keep in mind that in printing Y-axis grows down!!!
                  * */
                 int x1, x2, y1, y2;
-                float radius, height, years;
+                float years;
+                Tree checkingTree = Tree();
                 cin >> x1 >> x2;
                 cin >> y1 >> y2;
-                cin >> radius >> height >> years;
+                cin >> checkingTree.crownRadius >> checkingTree.trunkHeight >> years;
+
+                // Advance the forest to check environment
+                checkingTree.crownRadius += r_incr * years;
+                checkingTree.trunkHeight += h_incr * years;
+                advanceForest(trees, r_incr, h_incr, years);
 
                 int nRows = abs(y1) + abs(y2);
                 int nCols = abs(x1) + abs(x2);
@@ -103,10 +113,26 @@ void treeGame() {
                 // Iterate over the board area
                 for (int i = 0; i < nRows; ++i) {
                     for (int j = 0; j < nCols; ++j) {
-                        cout << "+";
+                        bool collided = false;
+                        checkingTree.positionX = (float) (x1 + j + 0.5);
+                        checkingTree.positionY = (float) (y1 + i + 0.5);
+                        for (int n = 0; n < maxNumTrees; n++) {
+                            if (collided)
+                                break;
+
+                            collided = doesInterfere(checkingTree, *trees[n]);
+                        }
+                        if (collided) {
+                            cout << "-";
+                        } else {
+                            cout << "+";
+                        }
                     }
                     cout << endl;
                 }
+
+                // return forest to unchanged state
+                advanceForest(trees, r_incr, h_incr, -years);
             }
         } else if (command == "REM") {
             int id;
@@ -118,10 +144,7 @@ void treeGame() {
             assert(not isnan(r_incr));
             assert(not isnan(h_incr));
 
-            for (int i = 0; i < maxNumTrees; ++i) {
-                trees[i]->crownRadius += (float) nEpochs * r_incr;
-                trees[i]->trunkHeight += (float) nEpochs * h_incr;
-            }
+            advanceForest(trees, r_incr, h_incr, nEpochs);
         } else if (command == "END") {
             break;
         } else {
@@ -203,9 +226,19 @@ void printCurrentForest(Tree **trees, int minX, int maxX, int minY, int maxY) {
     }
 }
 
+bool doesInterfere(Tree originTree, Tree checkingTree) {
+
+    float shiftX = checkingTree.positionX - originTree.positionX;
+    float shiftY = checkingTree.positionY - originTree.positionY;
+    float sumR = checkingTree.crownRadius + originTree.crownRadius;
+
+    return calcHypotenuse2(shiftX, shiftY) <= sumR * sumR;
+}
+
 void printInterferences(Tree **trees, int originalTreeId) {
     cout << " Interfering with: ";
 
+    // Create a table for keep sector information
     int compassEncoder[N_SECTORS];
     for (int &j: compassEncoder) {
         j = 0;
@@ -215,18 +248,24 @@ void printInterferences(Tree **trees, int originalTreeId) {
         if (originalTreeId == j)
             continue;
 
-        float shiftX = trees[j]->positionX - trees[originalTreeId]->positionX;
-        float shiftY = trees[j]->positionY - trees[originalTreeId]->positionY;
-        float sumR = trees[j]->crownRadius + trees[originalTreeId]->crownRadius;
-
-        if (calcHypotenuse2(shiftX, shiftY) <= sumR * sumR) {
+        if (doesInterfere(*trees[originalTreeId], *trees[j])) {
             cout << j + 1 << endl;
+
+            float shiftX = trees[j]->positionX - trees[originalTreeId]->positionX;
+            float shiftY = trees[j]->positionY - trees[originalTreeId]->positionY;
 
             int sector = checkSector(shiftX, shiftY);
             compassEncoder[sector] = 1;
         }
     }
     cout << " COMPASS: " << binaryTableToNumber(compassEncoder) << endl;
+}
+
+void advanceForest(Tree **trees, float crownIncrease, float trunkIncrease, float years) {
+    for (int i = 0; i < maxNumTrees; ++i) {
+        trees[i]->crownRadius += (float) years * crownIncrease;
+        trees[i]->trunkHeight += (float) years * trunkIncrease;
+    }
 }
 
 //int main() {
