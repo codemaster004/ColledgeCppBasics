@@ -15,4 +15,5 @@ add_executable(BCPLabs main.cpp
         week3/homeworkSequences.cpp
         week3/secondGroupProject.cpp
         week3/base64FilesDecoder.cpp
-        week4/homeworkInput.cpp)
+        week4/homeworkInput.cpp
+        week4/labs.cpp)

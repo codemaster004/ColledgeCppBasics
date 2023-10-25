@@ -24,7 +24,7 @@ void weirdInput() {
 }
 
 
-int main() {
-    weirdInput();
-    return 0;
-}
+//int main() {
+//    weirdInput();
+//    return 0;
+//}
