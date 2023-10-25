@@ -45,16 +45,16 @@ void wordMeasures() {
         cin >> numberOfWords;
 
         for (int i = 0; i < numberOfWords; ++i) {
-            bool flag = true;
+            bool wordWasFound = true;
             char currentWord[maxNumberOfLetters];
             for (int j = 0; j < wordLength; ++j) {
                 cin >> currentWord[j];
                 if(currentWord[j] != keyWordMask[j]) {
-                    flag = false;
+                    wordWasFound = false;
                 }
             }
 
-            if (flag) {
+            if (wordWasFound) {
                 for (int j = 0; j < wordLength; ++j) {
                     cout << '*';
                 }
@@ -86,19 +86,19 @@ void wordMeasures() {
             for (int j = 0; j <wordLength; ++j) {
                 cin >> tempWord[j];
             }
-            bool flag = true;
+            bool patterMatched = true;
             for (int j = 0; j <= wordLength - keyWordLength; ++j) {
-                flag = true;
+                patterMatched = true;
                 for (int k = 0; k < keyWordLength; ++k) {
                     if (tempWord[j+k] != keyWord[k]) {
-                        flag = false;
+                        patterMatched = false;
                     }
                 }
-                if (flag) {
+                if (patterMatched) {
                     break;
                 }
             }
-            if (!flag) {
+            if (!patterMatched) {
                 for (int k = 0; k < wordLength; ++k) {
                     cout << tempWord[k];
                 }
