@@ -18,7 +18,7 @@ void decodeBase64() {
     cin >> base64data;
 
     for (char letter : base64data) {
-        indexOf(base64table, letter, baseSize);
+//        indexOf(base64table, letter, baseSize);
     }
 }
 
@@ -28,7 +28,7 @@ int indexOf(char searchTable[], char searchElement, int maxElement) {
     return -1;
 }
 
-int main() {
-    decodeBase64();
-    return 0;
-}
+//int main() {
+//    decodeBase64();
+//    return 0;
+//}
