@@ -1,3 +1,2 @@
-5
-2 3 abc cbadd
-4 bfgds abcds dabcd sabbd
+f 3 abcd aa bbbb 45
+abcd ABCD aaaa bbbb aacc dddd dabcdd BB CC a d
