@@ -1,5 +1,5 @@
 #include "iostream"
-#include "string"
+#include "vector"
 
 using namespace std;
 
@@ -10,6 +10,49 @@ char base64table[baseSize] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 
                               'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
                               'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
                               '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '=', '/'};
+
+
+class DecodedCharHolder {
+private:
+    vector<char> charBytes;
+    int enteredCharCount;
+
+public:
+    // Add a single element to the array
+    void addElement(char value) {
+        charBytes.push_back(value);
+    }
+
+    // Add multiple elements to the array
+    void addElements(char *values[], int endIndex) {
+        for (int i = 0; i < endIndex; ++i) {
+            charBytes.push_back(*values[i]);
+        }
+    }
+
+    // Search for an element and return its index (or -1 if not found)
+//    int search(int value) {
+//
+//        return -1; // If not found
+//    }
+
+    // Get the element at a specific index (assuming index is valid)
+    int get(int index) {
+        return charBytes[index];
+    }
+
+    // Get range of elements with specified beginning index and length
+    vector<char> getRange(int startIndex, int numOfElements) {
+        vector<char> requestedBytes;
+        requestedBytes.resize(numOfElements);
+
+        for (int i = 0; i < numOfElements; ++i) {
+            requestedBytes[i] = charBytes[startIndex + i];
+        }
+
+        return requestedBytes;
+    }
+};
 
 int indexOf(const char *searchTable, char searchElement, int maxElement);
 
@@ -59,7 +102,7 @@ void binaryBrowser() {
 
                 int mask = createBitMask(8, 8 * (2 - i));
                 int decodedNumber = (encodedNumber & mask) >> 8 * (2 - i);
-                decodedBytes[decodedCharsCount % 16] = decodedNumber;
+                decodedBytes[decodedCharsCount % LINE_LENGTH] = decodedNumber;
                 decodedCharsCount++;
 
                 printInHex(decodedNumber, 2);
@@ -130,9 +173,7 @@ int indexOf(const char *searchTable, char searchElement, int maxElement) {
 
 int createBitMask(int numberOfUpBits, int rightOffset) {
     // Other option: ((uint) (-1)) << (32-upBits) >> (32-upBits-offset)
-    int result = (1 << numberOfUpBits) - 1;
-    result <<= rightOffset;
-    return result;
+    return ((1 << numberOfUpBits) - 1) << rightOffset;
 }
 
 void printBits(int a) {
