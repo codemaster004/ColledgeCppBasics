@@ -86,7 +86,10 @@ void binaryBrowser() {
 
         printDecodedChars(decodedBytes, decodedCharsCount % LINE_LENGTH);
     }
-    printInHex(decodedCharsCount, 8);
+
+    if (decodedCharsCount % LINE_LENGTH != 0) {
+        printInHex(decodedCharsCount, 8);
+    }
 }
 
 void printInHex(int value, int desiredLength) {
@@ -139,7 +142,7 @@ void printBits(int a) {
     cout << endl;
 }
 
-//int main() {
-//    decodeBase64();
-//    return 0;
-//}
+int main() {
+    decodeBase64();
+    return 0;
+}
