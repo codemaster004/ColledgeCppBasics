@@ -26,6 +26,45 @@ void weirdInput() {
             cout << table[i];
         }
         cout << endl;
+    } else if (mode == 'e') {
+        char most_common_char;
+        char characters[10];
+        int num_of_characters[10];
+        int next_Character_Index = 0;
+        int numberOfWords;
+        cin >> numberOfWords;
+        for (int i = 0; i < numberOfWords; i++) {
+            char currentChar;
+            currentChar = (char) (getchar());
+            if (currentChar == ' ' || currentChar == '\n') {
+                continue;
+            }
+
+            bool character_Previously_Encountered = false;
+            for (int n = 0; n < next_Character_Index; n++) {
+                if (characters[n] == currentChar) {
+                    num_of_characters[n]++;
+                    character_Previously_Encountered = true;
+                    break;
+                }
+            }
+            if (!character_Previously_Encountered) {
+                characters[next_Character_Index] = currentChar;
+                num_of_characters[next_Character_Index] = 1;
+                next_Character_Index++;
+            }
+        }
+        int maxCharRepetitions = 0;
+        int maxCharRepetitionIndex = 0;
+        for (int i = 0; i < next_Character_Index; i++) {
+            if (maxCharRepetitions < num_of_characters[i]) {
+                maxCharRepetitions = num_of_characters[i];
+                maxCharRepetitionIndex = i;
+            }
+        }
+        most_common_char = characters[maxCharRepetitionIndex];
+        cout << most_common_char;
+        cout << endl;
     } else if (mode == 'f') {
         int numberKeySeq;
         cin >> numberKeySeq;
@@ -57,7 +96,7 @@ void weirdInput() {
             tempWord[tempLen] = (char) (getchar());
             if (tempWord[tempLen] == ' ') {
                 bool patternWasFound = false;
-                for (int j = 0; j <wordsEntered; ++j) {
+                for (int j = 0; j < wordsEntered; ++j) {
                     if (isSublistInList(tempWord, tempLen, keyWords[j], wordsLength[j])) {
                         patternWasFound = true;
                     }

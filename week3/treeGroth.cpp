@@ -258,20 +258,17 @@ void printSimulationPlant(Tree **trees, Tree checkingTree, int x1, int x2, int y
     // Iterate over the board area
     for (int i = 0; i < nRows; ++i) {
         for (int j = 0; j < nCols; ++j) {
-            bool collided = false;
             checkingTree.positionX = (float) (x1 + j + 0.5);
             checkingTree.positionY = (float) (y1 + i + 0.5);
+
+            bool collided = false;
             for (int n = 0; n < maxNumTrees; n++) {
                 if (collided)
                     break;
 
                 collided = doesInterfere(checkingTree, *trees[n]);
             }
-            if (collided) {
-                cout << "-";
-            } else {
-                cout << "+";
-            }
+            cout << (collided ? "-" : "+");
         }
         cout << endl;
     }
