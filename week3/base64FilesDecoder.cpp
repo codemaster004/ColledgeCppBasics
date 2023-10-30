@@ -15,7 +15,6 @@ char base64table[baseSize] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 
 class DecodedCharHolder {
 private:
     vector<char> charBytes;
-    int enteredCharCount;
 
 public:
     // Add a single element to the array
@@ -24,9 +23,11 @@ public:
     }
 
     // Add multiple elements to the array
-    void addElements(char *values[], int endIndex) {
-        for (int i = 0; i < endIndex; ++i) {
-            charBytes.push_back(*values[i]);
+    void addElements(char *values[], int numElements) {
+        unsigned long size = charBytes.size();
+        charBytes.resize(size + numElements);
+        for (int i = 0; i < numElements; ++i) {
+            charBytes[size + i] = *values[i];
         }
     }
 
@@ -82,8 +83,8 @@ void binaryBrowser() {
     int enteredCharsCount = 0, paddingCount = 0, decodedCharsCount = 0;
     int decodedBytes[LINE_LENGTH];
 
-    printInHex(decodedCharsCount, 8);
-    cout << "  ";
+//    printInHex(decodedCharsCount, 8);
+//    cout << "  ";
 
     char tempChar;
     while (cin.get(tempChar) && tempChar != '\n') {
@@ -98,23 +99,25 @@ void binaryBrowser() {
         }
 
         if (enteredCharsCount % 4 == 0) {
+            char decodedBytesTemp[3];
             for (int i = 0; i < 3 - paddingCount; ++i) {
 
                 int mask = createBitMask(8, 8 * (2 - i));
                 int decodedNumber = (encodedNumber & mask) >> 8 * (2 - i);
+                decodedBytesTemp[i] = (char) (decodedNumber);
                 decodedBytes[decodedCharsCount % LINE_LENGTH] = decodedNumber;
                 decodedCharsCount++;
 
-                printInHex(decodedNumber, 2);
-                cout << ' ';
-                if (decodedCharsCount % (int) (0.5 * LINE_LENGTH) == 0)
-                    cout << ' ';
-
-                if (decodedCharsCount % LINE_LENGTH == 0) {
-                    printDecodedChars(decodedBytes, LINE_LENGTH);
-                    printInHex(decodedCharsCount, 8);
-                    cout << ' ' << ' ';
-                }
+//                printInHex(decodedNumber, 2);
+//                cout << ' ';
+//                if (decodedCharsCount % (int) (0.5 * LINE_LENGTH) == 0)
+//                    cout << ' ';
+//
+//                if (decodedCharsCount % LINE_LENGTH == 0) {
+//                    printDecodedChars(decodedBytes, LINE_LENGTH);
+//                    printInHex(decodedCharsCount, 8);
+//                    cout << ' ' << ' ';
+//                }
             }
         }
     }
