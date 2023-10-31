@@ -19,19 +19,13 @@ struct Tree {
 };
 
 int checkSector(float vectorX, float vectorY);
-
 float calcHypotenuse2(float a, float b);
-
 int binaryTableToNumber(const int *binaryMap);
-
 bool doesInterfere(Tree originTree, Tree checkingTree);
 
 void advanceForest(Tree **trees, float crownIncrease, float trunkIncrease, int years);
-
 void printCurrentForest(Tree **trees, int minX, int maxX, int minY, int maxY);
-
 void printInterferences(Tree **trees, int originalTreeId);
-
 void printSimulationPlant(Tree **trees, Tree checkingTree, int x1, int x2, int y1, int y2);
 
 void treeGame() {
