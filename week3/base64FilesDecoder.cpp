@@ -42,15 +42,54 @@ public:
 
         return requestedBytes;
     }
+
+    int findIndexOfPattern(const char *pattern, int patternLength) {
+        for (int i = 0; i <= charBytes.size() - patternLength; ++i) {
+            bool patterMatched = true;
+            for (int j = 0; j < patternLength; ++j) {
+                if (charBytes[i + j] != pattern[j]) {
+                    patterMatched = false;
+                }
+            }
+            if (patterMatched) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    int findIndexOfPatternReverse(const char *pattern, int patternLength) {
+        for (unsigned long i = charBytes.size() - patternLength; i > 0; i--) {
+            bool patterMatched = true;
+            for (int j = 0; j < patternLength; ++j) {
+                if (charBytes[i + j - 1] != pattern[j]) {
+                    patterMatched = false;
+                }
+            }
+            if (patterMatched) {
+                return i - 1;
+            }
+        }
+        return -1;
+    }
 };
 
 int indexOf(const char *searchTable, char searchElement, int maxElement);
+
 int createBitMask(int numberOfUpBits, int rightOffset);
+
 void printBits(int a);
+
 void inputAndDecodeBase64(DecodedCharHolder *store);
+
 void binaryBrowser(DecodedCharHolder *store);
+
+void readZipFile(DecodedCharHolder *store);
+
 void printInHex(int value, int desiredLength);
+
 void printDecodedAsChars(int *decoded, int length);
+
 void printOutputStructure(int byteIndex, int *bytes, int maxByte);
 
 /// Main Function
@@ -65,6 +104,9 @@ void decodeBase64() {
 
     if (mode == 0) {
         binaryBrowser(&decodedBytes);
+    } else if (mode == 1) {
+        binaryBrowser(&decodedBytes);
+        cout << endl;
     }
 }
 
@@ -98,6 +140,20 @@ void inputAndDecodeBase64(DecodedCharHolder *store) {
             store->addElements(decodedBytes, 3 - paddingCount);
         }
     }
+}
+
+int reverseConvertToInt(const vector<char>& bytes) {
+
+    return 0;
+}
+
+void readZipFile(DecodedCharHolder *store) {
+    char pattern[4] = {80, 75, 5, 6};
+    int index = store->findIndexOfPatternReverse(pattern, 4);
+    cout << "length: " << store->size() << endl;
+    cout << "index: " << index << endl;
+    store->getRange(index + 10, 2);
+
 }
 
 void binaryBrowser(DecodedCharHolder *store) {
