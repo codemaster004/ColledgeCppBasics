@@ -23,11 +23,11 @@ public:
     }
 
     // Add multiple elements to the array
-    void addElements(char *values[], int numElements) {
+    void addElements(const char values[], int numElements) {
         unsigned long size = charBytes.size();
         charBytes.resize(size + numElements);
         for (int i = 0; i < numElements; ++i) {
-            charBytes[size + i] = *values[i];
+            charBytes[size + i] = values[i];
         }
     }
 
@@ -40,6 +40,10 @@ public:
     // Get the element at a specific index (assuming index is valid)
     int get(int index) {
         return charBytes[index];
+    }
+
+    unsigned long size() {
+        return charBytes.size();
     }
 
     // Get range of elements with specified beginning index and length
@@ -56,39 +60,36 @@ public:
 };
 
 int indexOf(const char *searchTable, char searchElement, int maxElement);
-
 int createBitMask(int numberOfUpBits, int rightOffset);
-
 void printBits(int a);
-
-void binaryBrowser();
-
+void inputAndDecodeBase64(DecodedCharHolder *store);
+void binaryBrowser(DecodedCharHolder *store);
 void printInHex(int value, int desiredLength);
-
-void printDecodedChars(int *decoded, int length);
+void printDecodedAsChars(int *decoded, int length);
+void printOutputStructure(int byteIndex, int *bytes, int maxByte);
 
 /// Main Function
 void decodeBase64() {
     int mode;
     cin >> mode;
+    getchar();
+
+    DecodedCharHolder decodedBytes{};
+
+    inputAndDecodeBase64(&decodedBytes);
 
     if (mode == 0) {
-        getchar();
-        binaryBrowser();
+        binaryBrowser(&decodedBytes);
     }
 }
 
-void binaryBrowser() {
+void inputAndDecodeBase64(DecodedCharHolder *store) {
     int encodedNumber = 0;
-    int enteredCharsCount = 0, paddingCount = 0, decodedCharsCount = 0;
-    int decodedBytes[LINE_LENGTH];
-
-//    printInHex(decodedCharsCount, 8);
-//    cout << "  ";
+    int enteredCharCountCheck = 0, paddingCount = 0;
 
     char tempChar;
     while (cin.get(tempChar) && tempChar != '\n') {
-        enteredCharsCount++;
+        enteredCharCountCheck++;
 
         if (tempChar == '=') {
             encodedNumber <<= 6;
@@ -98,44 +99,61 @@ void binaryBrowser() {
             encodedNumber += indexOf(base64table, tempChar, baseSize);
         }
 
-        if (enteredCharsCount % 4 == 0) {
-            char decodedBytesTemp[3];
+        if (enteredCharCountCheck == 4) {
+            enteredCharCountCheck = 0;
+
+            char decodedBytes[3];
             for (int i = 0; i < 3 - paddingCount; ++i) {
 
                 int mask = createBitMask(8, 8 * (2 - i));
                 int decodedNumber = (encodedNumber & mask) >> 8 * (2 - i);
-                decodedBytesTemp[i] = (char) (decodedNumber);
-                decodedBytes[decodedCharsCount % LINE_LENGTH] = decodedNumber;
-                decodedCharsCount++;
 
-//                printInHex(decodedNumber, 2);
-//                cout << ' ';
-//                if (decodedCharsCount % (int) (0.5 * LINE_LENGTH) == 0)
-//                    cout << ' ';
-//
-//                if (decodedCharsCount % LINE_LENGTH == 0) {
-//                    printDecodedChars(decodedBytes, LINE_LENGTH);
-//                    printInHex(decodedCharsCount, 8);
-//                    cout << ' ' << ' ';
-//                }
+                decodedBytes[i] = (char) (decodedNumber);
             }
+            store->addElements(decodedBytes, 3 - paddingCount);
         }
     }
+}
 
-    if (decodedCharsCount % LINE_LENGTH != 0) {
-        int missingBytes = LINE_LENGTH - decodedCharsCount % LINE_LENGTH;
-        for (int i = 1; i <= missingBytes; ++i) {
-            cout << ' ' << ' ' << ' ';
-            if ((decodedCharsCount + i) % (int) (0.5 * LINE_LENGTH) == 0)
-                cout << ' ';
+void binaryBrowser(DecodedCharHolder *store) {
+    unsigned long size = store->size();
+
+    int i = 0;
+    for (i = 0; i < size / LINE_LENGTH; ++i) {
+        vector<char> decodedBytes = store->getRange(LINE_LENGTH * i, LINE_LENGTH * (i + 1));
+        int bytes[LINE_LENGTH];
+        for (int j = 0; j < LINE_LENGTH; ++j) {
+            bytes[j] = (unsigned char) (decodedBytes[j]);
         }
-
-        printDecodedChars(decodedBytes, decodedCharsCount % LINE_LENGTH);
+        printOutputStructure(i * LINE_LENGTH, bytes, LINE_LENGTH);
     }
 
-    if (decodedCharsCount % LINE_LENGTH != 0) {
-        printInHex(decodedCharsCount, 8);
+    if (size % LINE_LENGTH != 0) {
+        vector<char> decodedBytes = store->getRange(LINE_LENGTH * (size / LINE_LENGTH), (int) (size));
+        int bytes[LINE_LENGTH];
+        for (int j = 0; j < size % LINE_LENGTH; ++j) {
+            bytes[j] = (unsigned char) (decodedBytes[j]);
+        }
+        printOutputStructure((int) (size), bytes, (int) (size) % LINE_LENGTH);
     }
+
+    printInHex((int) (size), 8);
+}
+
+void printOutputStructure(int byteIndex, int *bytes, int maxByte) {
+    printInHex(byteIndex, 8);
+    cout << "  ";
+
+    for (int i = 0; i < maxByte; ++i) {
+        printInHex(bytes[i], 2);
+        cout << " ";
+    }
+    for (int i = 0; i < maxByte - LINE_LENGTH; ++i) {
+        cout << "   ";
+    }
+    cout << " ";
+    printDecodedAsChars(bytes, LINE_LENGTH);
+    cout << endl;
 }
 
 void printInHex(int value, int desiredLength) {
@@ -156,12 +174,12 @@ void printInHex(int value, int desiredLength) {
     }
 }
 
-void printDecodedChars(int *decoded, int length) {
+void printDecodedAsChars(int *decoded, int length) {
     cout << '|';
     for (int i = 0; i < length; ++i) {
         cout << (char) (decoded[i] >= 32 && decoded[i] < 127 ? decoded[i] : 46);
     }
-    cout << '|' << endl;
+    cout << '|';
 }
 
 int indexOf(const char *searchTable, char searchElement, int maxElement) {
