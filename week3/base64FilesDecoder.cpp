@@ -17,10 +17,6 @@ private:
     vector<char> charBytes;
 
 public:
-    // Add a single element to the array
-    void addElement(char value) {
-        charBytes.push_back(value);
-    }
 
     // Add multiple elements to the array
     void addElements(const char values[], int numElements) {
@@ -29,17 +25,6 @@ public:
         for (int i = 0; i < numElements; ++i) {
             charBytes[size + i] = values[i];
         }
-    }
-
-    // Search for an element and return its index (or -1 if not found)
-//    int search(int value) {
-//
-//        return -1; // If not found
-//    }
-
-    // Get the element at a specific index (assuming index is valid)
-    int get(int index) {
-        return charBytes[index];
     }
 
     unsigned long size() {
@@ -118,8 +103,7 @@ void inputAndDecodeBase64(DecodedCharHolder *store) {
 void binaryBrowser(DecodedCharHolder *store) {
     unsigned long size = store->size();
 
-    int i = 0;
-    for (i = 0; i < size / LINE_LENGTH; ++i) {
+    for (int i = 0; i < size / LINE_LENGTH; ++i) {
         vector<char> decodedBytes = store->getRange(LINE_LENGTH * i, LINE_LENGTH * (i + 1));
         int bytes[LINE_LENGTH];
         for (int j = 0; j < LINE_LENGTH; ++j) {
