@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Ignore build & debud idle files
+cmake-build-debug
+
+# Ignore idle files
+.idea
