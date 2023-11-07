@@ -22,13 +22,16 @@ int test2018() {
     int *x = tab;
     cout << sizeof(tab) << endl;
     cout << sizeof(x) / sizeof(int) << endl;
-    cout << (0 ^ 0);
+    cout << (0 ^ 0) << endl;
 
 //    cout << a[0][0] << " " << a[0][1] << " " << a[1][0] << " " << a[1][1];
+
+    unsigned int u = 0;
+    cout << (u+1) - x[1];
 
     return 0;
 }
 
-int main() {
-    test2018();
-}
+//int main() {
+//    test2018();
+//}
