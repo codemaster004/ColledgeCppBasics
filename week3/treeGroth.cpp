@@ -8,10 +8,11 @@ using namespace std;
 #define PI 3.1415
 #define N_SECTORS 8
 
-const int maxNumTrees = 2;
+const int maxNumTrees = 10;
 
 struct Tree {
     bool isActive = false;
+    int id = 0;
     float positionX{};
     float positionY{};
     float crownRadius{};
@@ -45,7 +46,7 @@ void treeGame() {
             // MODE: Add tree to the forest
             int id, index;
             cin >> id;
-            index = id - 1;
+            index = id;
 
             if (trees[index] != nullptr) {
                 if (trees[index]->isActive) {
@@ -82,13 +83,14 @@ void treeGame() {
                     if (trees[i] == nullptr)
                         continue;
 
-                    cout << (i + 1) << " at " << trees[i]->positionY << ", " << trees[i]->positionX;
-                    cout << " r=" << trees[i]->crownRadius << " h=" << trees[i]->trunkHeight << endl;
+                    cout << i << " at " << trees[i]->positionY << ", " << trees[i]->positionX;
+                    cout << " r=" << trees[i]->crownRadius << " h=" << trees[i]->trunkHeight << " ";
 
                     if (mode == 2) {
                         // Also provide information about interference with other trees
                         printInterferences(trees, i);
                     }
+                    cout << endl;
                 }
 
             } else if (mode == 4) {
@@ -157,7 +159,6 @@ int checkSector(float vectorX, float vectorY) {
         }
         prevAngle = angle;
     }
-    assert(sector >= 0 && sector <= 7);
     return sector;
 }
 
@@ -233,16 +234,17 @@ void printInterferences(Tree **trees, int originalTreeId) {
             continue;
 
         if (doesInterfere(*trees[originalTreeId], *trees[j])) {
-            cout << j + 1 << endl;
+            cout << j + 1 << " ";
 
             float shiftX = trees[j]->positionX - trees[originalTreeId]->positionX;
             float shiftY = trees[j]->positionY - trees[originalTreeId]->positionY;
 
             int sector = checkSector(shiftX, shiftY);
-            compassEncoder[sector] = 1;
+            if (sector > 0)
+                compassEncoder[sector] = 1;
         }
     }
-    cout << " COMPASS: " << binaryTableToNumber(compassEncoder) << endl;
+    cout << " COMPASS: " << binaryTableToNumber(compassEncoder);
 }
 
 void printSimulationPlant(Tree **trees, Tree checkingTree, int x1, int x2, int y1, int y2) {
@@ -268,7 +270,7 @@ void printSimulationPlant(Tree **trees, Tree checkingTree, int x1, int x2, int y
     }
 }
 
-//int main() {
-//    treeGame();
-//    return 0;
-//}
+int main() {
+    treeGame();
+    return 0;
+}
