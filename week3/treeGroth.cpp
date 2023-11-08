@@ -188,7 +188,7 @@ bool doesInterfere(Tree originTree, Tree checkingTree) {
 
 void advanceForest(Tree **trees, float crownIncrease, float trunkIncrease, int years) {
     for (int i = 0; i < maxNumTrees; ++i) {
-        if (trees[i] != nullptr || !trees[i]->isActive)
+        if (trees[i] == nullptr || !trees[i]->isActive)
             continue;
         trees[i]->crownRadius += (float) years * crownIncrease;
         trees[i]->trunkHeight += (float) years * trunkIncrease;
