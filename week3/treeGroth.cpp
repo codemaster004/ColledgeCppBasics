@@ -80,7 +80,7 @@ void treeGame() {
                 // Print information about all the trees
                 cout << "Trees:" << endl;
                 for (int i = 0; i < maxNumTrees; i++) {
-                    if (trees[i] == nullptr)
+                    if (trees[i] == nullptr || !trees[i]->isActive)
                         continue;
 
                     cout << i << " at " << trees[i]->positionY << ", " << trees[i]->positionX;
@@ -151,7 +151,7 @@ int checkSector(float vectorX, float vectorY) {
     float sectorRange = 360.0 / N_SECTORS;
     float prevAngle = sectorRange / (float) (-2.0) / (float) (180.0) * float(PI);
 
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < N_SECTORS; i++) {
         float angle = prevAngle + (float) (sectorRange / 180.0 * PI);
         if (arcCos >= prevAngle && arcCos <= angle) {
             sector = i;
@@ -188,6 +188,8 @@ bool doesInterfere(Tree originTree, Tree checkingTree) {
 
 void advanceForest(Tree **trees, float crownIncrease, float trunkIncrease, int years) {
     for (int i = 0; i < maxNumTrees; ++i) {
+        if (trees[i] != nullptr || !trees[i]->isActive)
+            continue;
         trees[i]->crownRadius += (float) years * crownIncrease;
         trees[i]->trunkHeight += (float) years * trunkIncrease;
     }
@@ -230,6 +232,8 @@ void printInterferences(Tree **trees, int originalTreeId) {
     }
 
     for (int j = 0; j < maxNumTrees; j++) {
+        if (trees[j] != nullptr || !trees[j]->isActive)
+            continue;
         if (originalTreeId == j)
             continue;
 
