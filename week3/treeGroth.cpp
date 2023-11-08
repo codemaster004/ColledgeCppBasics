@@ -238,13 +238,13 @@ void printInterferences(Tree **trees, int originalTreeId) {
             continue;
 
         if (doesInterfere(*trees[originalTreeId], *trees[j])) {
-            cout << j + 1 << " ";
+            cout << j << " ";
 
             float shiftX = trees[j]->positionX - trees[originalTreeId]->positionX;
             float shiftY = trees[j]->positionY - trees[originalTreeId]->positionY;
 
             int sector = checkSector(shiftX, shiftY);
-            if (sector > 0)
+            if (sector >= 0)
                 compassEncoder[sector] = 1;
         }
     }
