@@ -232,7 +232,7 @@ void printInterferences(Tree **trees, int originalTreeId) {
     }
 
     for (int j = 0; j < maxNumTrees; j++) {
-        if (trees[j] != nullptr || !trees[j]->isActive)
+        if (trees[j] == nullptr || !trees[j]->isActive)
             continue;
         if (originalTreeId == j)
             continue;
