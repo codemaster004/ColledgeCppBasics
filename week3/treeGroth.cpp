@@ -111,6 +111,16 @@ void treeGame() {
 
                 // return forest to unchanged state
                 advanceForest(trees, r_incr, h_incr, -years);
+            } else if (mode == 5) {
+                int id, gridSize, distanceFromTree;
+                cin >> id >> gridSize >> distanceFromTree;
+
+                for (int i = 0; i < gridSize; ++i) {
+                    for (int j = 0; j < gridSize; ++j) {
+
+                    }
+                }
+
             }
         } else if (command == "REM") {
             // TODO: remove tree functionality
