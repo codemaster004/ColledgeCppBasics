@@ -20,13 +20,23 @@ struct Tree {
 };
 
 int checkSector(float vectorX, float vectorY);
+
 float calcHypotenuse2(float a, float b);
-int binaryTableToNumber(const int *binaryMap);
-bool doesInterfere(Tree originTree, Tree checkingTree);
+
+int binaryTableToNumber(const int *binaryMap, int nElements);
+
+bool isWithinDiagonal(float distanceX, float distanceY, float diagonal);
+
+bool doesTreesInterfere(Tree originTree, Tree checkingTree);
+
+int findTreeIndexById(Tree **trees, int treeId);
 
 void advanceForest(Tree **trees, float crownIncrease, float trunkIncrease, int years);
-void printCurrentForest(Tree **trees, int minX, int maxX, int minY, int maxY);
+
+void printCurrentForest(Tree **trees, float minX, float maxX, float minY, float maxY, float precision, int mode);
+
 void printInterferences(Tree **trees, int originalTreeId);
+
 void printSimulationPlant(Tree **trees, Tree checkingTree, int x1, int x2, int y1, int y2);
 
 void treeGame() {
@@ -36,8 +46,8 @@ void treeGame() {
         trees[i] = new Tree;
     }
 
-    float r_incr;
-    float h_incr;
+    float r_incr = 0;
+    float h_incr = 0;
 
     while (true) {
         string command;
@@ -71,10 +81,10 @@ void treeGame() {
             cin >> mode;
             if (mode == 3) {
                 // Print the current coverage of the forest in a given area
-                int x1, x2, y1, y2;
+                float x1, x2, y1, y2;
                 cin >> x1 >> x2 >> y1 >> y2;
 
-                printCurrentForest(trees, x1, x2, y1, y2);
+                printCurrentForest(trees, x1, x2, y1, y2, 1, 0);
 
             } else if (mode == 1 || mode == 2) {
                 // Print information about all the trees
@@ -176,24 +186,27 @@ float calcHypotenuse2(float a, float b) {
     return a * a + b * b;
 }
 
-int binaryTableToNumber(const int *binaryMap) {
+int binaryTableToNumber(const int *binaryMap, int nElements) {
     int finalNumber = 0;
 
     int multiplier = 1;
-    for (int i = 0; i < N_SECTORS; ++i) {
+    for (int i = 0; i < nElements; ++i) {
         finalNumber += binaryMap[i] * multiplier;
         multiplier *= 2;
     }
     return finalNumber;
 }
 
-bool doesInterfere(Tree originTree, Tree checkingTree) {
+bool isWithinDiagonal(float distanceX, float distanceY, float diagonal) {
+    return calcHypotenuse2(distanceX, distanceY) <= diagonal * diagonal;
+}
 
+bool doesTreesInterfere(Tree originTree, Tree checkingTree) {
     float shiftX = checkingTree.positionX - originTree.positionX;
     float shiftY = checkingTree.positionY - originTree.positionY;
     float sumR = checkingTree.crownRadius + originTree.crownRadius;
 
-    return calcHypotenuse2(shiftX, shiftY) <= sumR * sumR;
+    return isWithinDiagonal(shiftX, shiftY, sumR);
 }
 
 void advanceForest(Tree **trees, float crownIncrease, float trunkIncrease, int years) {
@@ -205,28 +218,52 @@ void advanceForest(Tree **trees, float crownIncrease, float trunkIncrease, int y
     }
 }
 
-void printCurrentForest(Tree **trees, int minX, int maxX, int minY, int maxY) {
-    int nRows = abs(minY) + abs(maxY);
-    int nCols = abs(minX) + abs(maxX);
+void printCurrentForest(Tree **trees, float minX, float maxX, float minY, float maxY, float precision, int mode) {
+    int numStepsY = (int) ((maxY - minY) / precision);
+    int numStepsX = (int) ((maxX - minX) / precision);
 
     // Iterate over the board area
-    for (int i = 0; i < nRows; ++i) {
-        for (int j = 0; j < nCols; ++j) {
+    for (int i = 0; i < numStepsY; ++i) {
+        for (int j = 0; j < numStepsX; ++j) {
 
-            auto checkingX = (float) (j + 0.5 + minY);
-            auto checkingY = (float) (i + 0.5 + minX);
+            auto checkingY = minY + precision * (float) (i) + precision / 2;
+            auto checkingX = minX + precision * (float) (j) + precision / 2;
 
             bool slotOccupied = false;
             for (int n = 0; n < maxNumTrees; n++) {
                 float vectorY = checkingY - trees[n]->positionY;
                 float vectorX = checkingX - trees[n]->positionX;
 
-                if (calcHypotenuse2(vectorY, vectorX) <= trees[n]->crownRadius * trees[n]->crownRadius) {
+                if (isWithinDiagonal(vectorX, vectorY, trees[n]->crownRadius)) {
                     slotOccupied = true;
                 }
             }
 
             cout << (slotOccupied ? "T" : ".");
+        }
+        cout << endl;
+    }
+}
+
+// TODO: Those two functions should use callback
+void printSimulationPlant(Tree **trees, Tree checkingTree, int x1, int x2, int y1, int y2) {
+    int nRows = abs(y1) + abs(y2);
+    int nCols = abs(x1) + abs(x2);
+
+    // Iterate over the board area
+    for (int i = 0; i < nRows; ++i) {
+        for (int j = 0; j < nCols; ++j) {
+            checkingTree.positionX = (float) (x1 + j + 0.5);
+            checkingTree.positionY = (float) (y1 + i + 0.5);
+
+            bool collided = false;
+            for (int n = 0; n < maxNumTrees; n++) {
+                if (collided)
+                    break;
+
+                collided = doesTreesInterfere(checkingTree, *trees[n]);
+            }
+            cout << (collided ? "-" : "+");
         }
         cout << endl;
     }
@@ -247,7 +284,7 @@ void printInterferences(Tree **trees, int originalTreeId) {
         if (originalTreeId == j)
             continue;
 
-        if (doesInterfere(*trees[originalTreeId], *trees[j])) {
+        if (doesTreesInterfere(*trees[originalTreeId], *trees[j])) {
             cout << j << " ";
 
             float shiftX = trees[j]->positionX - trees[originalTreeId]->positionX;
@@ -258,30 +295,15 @@ void printInterferences(Tree **trees, int originalTreeId) {
                 compassEncoder[sector] = 1;
         }
     }
-    cout << " COMPASS: " << binaryTableToNumber(compassEncoder);
+    cout << " COMPASS: " << binaryTableToNumber(compassEncoder, N_SECTORS);
 }
 
-void printSimulationPlant(Tree **trees, Tree checkingTree, int x1, int x2, int y1, int y2) {
-    int nRows = abs(y1) + abs(y2);
-    int nCols = abs(x1) + abs(x2);
+int findTreeIndexById(Tree **trees, int treeId) {
+    for (int i = 0; i < maxNumTrees; ++i)
+        if (trees[i]->id == treeId)
+            return i;
 
-    // Iterate over the board area
-    for (int i = 0; i < nRows; ++i) {
-        for (int j = 0; j < nCols; ++j) {
-            checkingTree.positionX = (float) (x1 + j + 0.5);
-            checkingTree.positionY = (float) (y1 + i + 0.5);
-
-            bool collided = false;
-            for (int n = 0; n < maxNumTrees; n++) {
-                if (collided)
-                    break;
-
-                collided = doesInterfere(checkingTree, *trees[n]);
-            }
-            cout << (collided ? "-" : "+");
-        }
-        cout << endl;
-    }
+    return -1;
 }
 
 int main() {
