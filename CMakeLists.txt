@@ -16,4 +16,7 @@ add_executable(BCPLabs main.cpp
         week3/secondGroupProject.cpp
         week4/homeworkInput.cpp
         week4/labs.cpp
+        week5/tests.cpp
+        week5/lifeGame.cpp
+        week5/test2018..cpp
 )
