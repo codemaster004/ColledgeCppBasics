@@ -122,14 +122,15 @@ void treeGame() {
                 // return forest to unchanged state
                 advanceForest(trees, r_incr, h_incr, -years);
             } else if (mode == 5) {
-                int id, gridSize, distanceFromTree;
+                int id, gridSize;
+                float distanceFromTree;
                 cin >> id >> gridSize >> distanceFromTree;
 
-                for (int i = 0; i < gridSize; ++i) {
-                    for (int j = 0; j < gridSize; ++j) {
-
-                    }
-                }
+                // TODO: Implement new leaf printing
+                Tree centerTree = *trees[findTreeIndexById(trees, id)];
+                float minX = centerTree.positionX - distanceFromTree, maxX = centerTree.positionX + distanceFromTree;
+                float minY = centerTree.positionY - distanceFromTree, maxY = centerTree.positionY + distanceFromTree;
+                printCurrentForest(trees, minX, maxX, minY, maxY, (maxX - minX) / (float) (gridSize), 1);
 
             }
         } else if (command == "REM") {
