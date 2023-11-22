@@ -21,4 +21,5 @@ add_executable(BCPLabs main.cpp
         week5/test2018..cpp
         week6/labs.cpp
         week6/snake.cpp
+        week7/binaryFiles.cpp
 )
