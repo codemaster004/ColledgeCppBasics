@@ -77,7 +77,7 @@ void readInputFromFile(const char *filename) {
 
 }
 
-int main(int argc, char **argv) {
+int binFileMain(int argc, char **argv) {
 	if (argc <= 1) {
 		std::cout << "Incorrect number of arguments";
 		return 0;
