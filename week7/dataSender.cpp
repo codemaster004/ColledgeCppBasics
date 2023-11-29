@@ -23,14 +23,14 @@ void fillTable(int **table, int sizeY, int sizeX) {
 	}
 }
 
-void moveValuesForward(int *table, int len) {
-	for (int i = len - 1; i >= 0; --i) {
-		if (i != 0) {
-			table[i] += table[i - 1];
-			table[i - 1] = 0;
-		}
-	}
-}
+//void moveValuesForward(int *table, int len) {
+//	for (int i = len - 1; i >= 0; --i) {
+//		if (i != 0) {
+//			table[i] += table[i - 1];
+//			table[i - 1] = 0;
+//		}
+//	}
+//}
 
 int dataSender() {
 	int *fileSize = nullptr;
@@ -80,7 +80,7 @@ int dataSender() {
 		}
 		printTable(transfer, numberOfFiles, length);
 		for (int j = 0; j < numberOfFiles; ++j) {
-			moveValuesForward(transfer[j] + 1, length - 1);
+//			moveValuesForward(transfer[j] + 1, length - 1);
 		}
 	}
 
