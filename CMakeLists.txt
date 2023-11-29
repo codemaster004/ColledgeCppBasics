@@ -24,4 +24,5 @@ add_executable(BCPLabs main.cpp
         week7/binaryFiles.cpp
         week7/dataSender.cpp
         week7/file.cpp
+        week8/memoryAllocation.cpp
 )
